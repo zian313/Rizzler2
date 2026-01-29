@@ -10,7 +10,7 @@ class CategoryController extends Controller
     // Tampilkan semua kategori
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::latest()->get();
         return view('categories.index', compact('categories'));
     }
 

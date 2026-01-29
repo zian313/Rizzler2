@@ -211,6 +211,11 @@
       </div>
     @endif
 
+    <!-- Pagination -->
+    <div style="margin-top: 2rem; display: flex; justify-content: center;">
+      {{ $products->links('pagination::bootstrap-4') }}
+    </div>
+
   </div>
 </div>
 

@@ -12,7 +12,7 @@ class ProductController extends Controller
     // Tampilkan semua produk
     public function index()
     {
-        $products = Product::with('category')->paginate(10);
+        $products = Product::with('category')->latest()->paginate(10);
         return view('products.index', compact('products'));
     }
 
@@ -26,7 +26,7 @@ class ProductController extends Controller
             $query->where('category_id', $request->category);
         }
 
-        $products = $query->paginate(12);
+        $products = $query->latest()->paginate(12);
         $categories = Category::all();
 
         return view('products.pembeli', compact('products', 'categories'));
