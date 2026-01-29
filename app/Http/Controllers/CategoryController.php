@@ -26,9 +26,17 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|unique:categories|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        Category::create($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('categories', 'public');
+            $data['image'] = $imagePath;
+        }
+
+        Category::create($data);
 
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan');
     }
@@ -51,9 +59,22 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|unique:categories,name,' . $category->id . '|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $category->update($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada dan bukan URL eksternal
+            if ($category->image && !filter_var($category->image, FILTER_VALIDATE_URL)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($category->image);
+            }
+            
+            $imagePath = $request->file('image')->store('categories', 'public');
+            $data['image'] = $imagePath;
+        }
+
+        $category->update($data);
 
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui');
     }

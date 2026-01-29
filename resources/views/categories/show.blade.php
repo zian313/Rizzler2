@@ -44,24 +44,28 @@
       </div>
 
       <!-- Actions -->
-      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-        <a href="{{ route('categories.edit', $category) }}" 
-           style="background-color: #0dcaf0; color: white; padding: 0.75rem 1.5rem; border-radius: 0.3rem; font-weight: 600; text-decoration: none; transition: 0.3s; display: inline-block;"
-           onmouseover="this.style.backgroundColor='#0bb5e3'"
-           onmouseout="this.style.backgroundColor='#0dcaf0'">
-          Edit Kategori
-        </a>
-        <form method="POST" action="{{ route('categories.destroy', $category) }}" style="display: inline;" onsubmit="return confirm('Yakin ingin menghapus kategori ini?');">
-          @csrf
-          @method('DELETE')
-          <button type="submit" 
-                  style="background-color: #dc3545; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.3rem; font-weight: 600; cursor: pointer; transition: 0.3s;"
-                  onmouseover="this.style.backgroundColor='#c82333'"
-                  onmouseout="this.style.backgroundColor='#dc3545'">
-            Hapus Kategori
-          </button>
-        </form>
-      </div>
+      @auth
+        @if(auth()->user()->role === 'admin')
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="{{ route('categories.edit', $category) }}" 
+               style="background-color: #0dcaf0; color: white; padding: 0.75rem 1.5rem; border-radius: 0.3rem; font-weight: 600; text-decoration: none; transition: 0.3s; display: inline-block;"
+               onmouseover="this.style.backgroundColor='#0bb5e3'"
+               onmouseout="this.style.backgroundColor='#0dcaf0'">
+              Edit Kategori
+            </a>
+            <form method="POST" action="{{ route('categories.destroy', $category) }}" style="display: inline;" onsubmit="return confirm('Yakin ingin menghapus kategori ini?');">
+              @csrf
+              @method('DELETE')
+              <button type="submit" 
+                      style="background-color: #dc3545; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.3rem; font-weight: 600; cursor: pointer; transition: 0.3s;"
+                      onmouseover="this.style.backgroundColor='#c82333'"
+                      onmouseout="this.style.backgroundColor='#dc3545'">
+                Hapus Kategori
+              </button>
+            </form>
+          </div>
+        @endif
+      @endauth
     </div>
 
     <!-- Produk dalam Kategori -->
@@ -75,7 +79,7 @@
               
               <!-- Image -->
               @if ($product->image)
-                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 100%; height: 180px; object-fit: cover;">
+                <img src="{{ filter_var($product->image, FILTER_VALIDATE_URL) ? $product->image : asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 100%; height: 180px; object-fit: cover;">
               @else
                 <div style="width: 100%; height: 180px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #999;">
                   No image

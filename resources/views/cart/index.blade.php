@@ -143,12 +143,12 @@
               </div>
 
               <button type="submit" style="width: 100%; background-color: #1e09e2; color: white; padding: 0.8rem; border-radius: 0.5rem; font-weight: 700; font-size: 1rem; border: none; cursor: pointer; transition: 0.3s;" onmouseover="this.style.backgroundColor='#1a07b8'" onmouseout="this.style.backgroundColor='#1e09e2'">
-                💬 Checkout via WhatsApp
+                🛍️ Proses Pesanan
               </button>
             </form>
 
             <p style="color: #666; font-size: 0.85rem; text-align: center; margin-top: 1rem;">
-              <a href="{{ route('products.index') }}" style="color: #1e09e2; text-decoration: none; font-weight: 600;">← Lanjut Belanja</a>
+              <a href="{{ route('products.pembeli') }}" style="color: #1e09e2; text-decoration: none; font-weight: 600;">← Lanjut Belanja</a>
             </p>
           </div>
         </div>
@@ -162,7 +162,7 @@
         </div>
         <h2 style="font-size: 1.5rem; font-weight: 700; color: #000; margin-bottom: 0.5rem;">Keranjang Kosong</h2>
         <p style="color: #666; font-size: 1.1rem; margin-bottom: 2rem;">Belum ada produk di keranjang Anda. Mulai belanja sekarang!</p>
-        <a href="{{ route('products.index') }}" style="background-color: #1e09e2; color: white; padding: 0.8rem 2rem; border-radius: 0.5rem; font-weight: 600; font-size: 1rem; text-decoration: none; display: inline-block; transition: 0.3s;" onmouseover="this.style.backgroundColor='#1a07b8'" onmouseout="this.style.backgroundColor='#1e09e2'">
+        <a href="{{ route('products.pembeli') }}" style="background-color: #1e09e2; color: white; padding: 0.8rem 2rem; border-radius: 0.5rem; font-weight: 600; font-size: 1rem; text-decoration: none; display: inline-block; transition: 0.3s;" onmouseover="this.style.backgroundColor='#1a07b8'" onmouseout="this.style.backgroundColor='#1e09e2'">
           Mulai Belanja
         </a>
       </div>

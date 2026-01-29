@@ -67,18 +67,6 @@
                   <a href="{{ route('orders.show', $order) }}" style="background-color: #1e09e2; color: white; padding: 0.4rem 0.8rem; border-radius: 0.3rem; font-size: 0.85rem; font-weight: 600; text-decoration: none; display: inline-block; transition: 0.3s;" onmouseover="this.style.backgroundColor='#1a07b8'" onmouseout="this.style.backgroundColor='#1e09e2'">
                     Lihat Detail
                   </a>
-                  @if (Auth::check())
-                    <a href="{{ route('orders.edit', $order) }}" style="background-color: #6c757d; color: white; padding: 0.4rem 0.8rem; border-radius: 0.3rem; font-size: 0.85rem; font-weight: 600; text-decoration: none; display: inline-block; margin-left: 0.3rem; transition: 0.3s;" onmouseover="this.style.backgroundColor='#5a6268'" onmouseout="this.style.backgroundColor='#6c757d'">
-                      Edit
-                    </a>
-                    <form action="{{ route('orders.destroy', $order) }}" method="POST" style="display: inline;" onsubmit="return confirm('Yakin ingin menghapus pesanan ini?');">
-                      @csrf
-                      @method('DELETE')
-                      <button type="submit" style="background-color: #dc3545; color: white; padding: 0.4rem 0.8rem; border-radius: 0.3rem; font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer; margin-left: 0.3rem; transition: 0.3s;" onmouseover="this.style.backgroundColor='#c82333'" onmouseout="this.style.backgroundColor='#dc3545'">
-                        Hapus
-                      </button>
-                    </form>
-                  @endif
                 </td>
               </tr>
             @endforeach
@@ -92,7 +80,7 @@
       </div>
     @else
       <div style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 2rem; text-align: center;">
-        <p style="color: #666; font-size: 1.1rem; margin: 0;">Belum ada pesanan. <a href="{{ route('products.index') }}" style="color: #1e09e2; font-weight: 600; text-decoration: none;">Mulai belanja sekarang</a></p>
+        <p style="color: #666; font-size: 1.1rem; margin: 0;">Belum ada pesanan. <a href="{{ route('products.pembeli') }}" style="color: #1e09e2; font-weight: 600; text-decoration: none;">Mulai belanja sekarang</a></p>
       </div>
     @endif
 

@@ -144,7 +144,7 @@
           @if ($product->image)
             <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f0f8ff; border-radius: 0.5rem; border: 2px solid #e3f2fd;">
               <p style="margin: 0 0 0.75rem 0; font-weight: 600; color: #333; font-size: 0.95rem;">📷 Foto Saat Ini:</p>
-              <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" 
+              <img src="{{ filter_var($product->image, FILTER_VALIDATE_URL) ? $product->image : asset('storage/' . $product->image) }}" alt="{{ $product->name }}" 
                    style="max-width: 200px; border-radius: 0.4rem; border: 2px solid #1e09e2; box-shadow: 0 4px 10px rgba(30, 9, 226, 0.2);">
             </div>
           @endif

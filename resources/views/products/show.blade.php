@@ -21,7 +21,7 @@
         <!-- Gambar Produk -->
         <div>
           @if ($product->image)
-            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 100%; border-radius: 0.5rem; object-fit: cover; max-height: 400px;">
+            <img src="{{ filter_var($product->image, FILTER_VALIDATE_URL) ? $product->image : asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 100%; border-radius: 0.5rem; object-fit: cover; max-height: 400px;">
           @else
             <div style="width: 100%; height: 400px; background-color: #f8f9fa; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; color: #999; font-size: 1rem;">
               Tidak ada gambar

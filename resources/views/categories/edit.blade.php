@@ -17,7 +17,7 @@
       </div>
     @endif
 
-    <form method="POST" action="{{ route('categories.update', $category) }}">
+    <form method="POST" action="{{ route('categories.update', $category) }}" enctype="multipart/form-data">
       @csrf
       @method('PUT')
 
@@ -32,6 +32,26 @@
                onmouseout="this.style.borderColor='{{ $errors->has('name') ? '#dc3545' : '#ddd' }}'"
                required>
         @error('name')
+          <small style="color: #dc3545; display: block; margin-top: 0.25rem;">{{ $message }}</small>
+        @enderror
+      </div>
+      
+      <!-- Upload Image -->
+      <div style="margin-bottom: 1.5rem;">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #000; font-size: 1rem;">Upload Gambar Kategori <span style="font-weight: 400; font-size: 0.85rem; color: #666;">(Opsional, Max 2MB)</span></label>
+        
+        @if ($category->image)
+          <div style="margin-bottom: 0.5rem;">
+            <img src="{{ filter_var($category->image, FILTER_VALIDATE_URL) ? $category->image : asset('storage/' . $category->image) }}" 
+                 alt="Current Image" style="height: 100px; border-radius: 0.3rem; object-fit: cover;">
+          </div>
+        @endif
+
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="file" name="image" accept="image/*"
+                 style="flex: 1; padding: 0.75rem; border: 1px solid {{ $errors->has('image') ? '#dc3545' : '#ddd' }}; border-radius: 0.3rem; font-size: 0.95rem; font-family: 'Poppins', sans-serif; transition: 0.3s; background-color: #f8f9fa;">
+        </div>
+        @error('image')
           <small style="color: #dc3545; display: block; margin-top: 0.25rem;">{{ $message }}</small>
         @enderror
       </div>

@@ -16,6 +16,16 @@
         </div>
       </div>
       
+      @auth
+        @if(auth()->user()->role === 'admin')
+          <a href="{{ route('products.create') }}" 
+             style="padding: 0.8rem 1.5rem; background: linear-gradient(135deg, #1e09e2 0%, #1a07b8 100%); color: white; border: none; border-radius: 0.6rem; font-size: 0.95rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; font-family: 'Poppins', sans-serif; box-shadow: 0 4px 15px rgba(30, 9, 226, 0.3);"
+             onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 20px rgba(30, 9, 226, 0.4)'"
+             onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(30, 9, 226, 0.3)'">
+            ➕ Tambah Produk
+          </a>
+        @endif
+      @endauth
     </div>
 
     <!-- Alert Success -->
@@ -42,7 +52,11 @@
                 <th style="padding: 1.5rem; text-align: left; font-weight: 700; color: #333; font-size: 0.95rem;">Kategori</th>
                 <th style="padding: 1.5rem; text-align: center; font-weight: 700; color: #333; font-size: 0.95rem;">Harga</th>
                 <th style="padding: 1.5rem; text-align: center; font-weight: 700; color: #333; font-size: 0.95rem;">Stok</th>
-                
+                @auth
+                  @if(auth()->user()->role === 'admin')
+                    <th style="padding: 1.5rem; text-align: center; font-weight: 700; color: #333; font-size: 0.95rem;">Aksi</th>
+                  @endif
+                @endauth
               </tr>
             </thead>
             <tbody>
@@ -52,7 +66,7 @@
                   <td style="padding: 1.25rem 1.5rem;">
                     <div style="display: flex; gap: 1rem; align-items: center;">
                       @if ($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" 
+                        <img src="{{ filter_var($product->image, FILTER_VALIDATE_URL) ? $product->image : asset('storage/' . $product->image) }}" alt="{{ $product->name }}" 
                              style="width: 50px; height: 50px; object-fit: cover; border-radius: 0.4rem; border: 2px solid #e0e0e0;">
                       @else
                         <div style="width: 50px; height: 50px; background-color: #f0f0f0; border-radius: 0.4rem; display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>
@@ -78,11 +92,31 @@
                       {{ $product->stock }} unit
                     </span>
                   </td>
-                  <td style="padding: 1.25rem 1.5rem; text-align: center;">
-                    <div style="display: flex; gap: 0.5rem; justify-content: center;">
-                      
-                    </div>
-                  </td>
+                  @auth
+                    @if(auth()->user()->role === 'admin')
+                      <td style="padding: 1.25rem 1.5rem; text-align: center;">
+                        <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                          <a href="{{ route('products.edit', $product->id) }}" 
+                             style="padding: 0.5rem 1rem; background-color: #1e09e2; color: white; border: none; border-radius: 0.4rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: 0.3s;"
+                             onmouseover="this.style.backgroundColor='#1a07b8'"
+                             onmouseout="this.style.backgroundColor='#1e09e2'">
+                            ✏️ Edit
+                          </a>
+                          <form method="POST" action="{{ route('products.destroy', $product->id) }}" style="display: inline; margin: 0;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" 
+                                    style="padding: 0.5rem 1rem; background-color: #dc3545; color: white; border: none; border-radius: 0.4rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.3s;"
+                                    onmouseover="this.style.backgroundColor='#c82333'"
+                                    onmouseout="this.style.backgroundColor='#dc3545'"
+                                    onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
+                              🗑️ Hapus
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    @endif
+                  @endauth
                 </tr>
               @endforeach
             </tbody>
@@ -99,7 +133,7 @@
             
             <!-- Product Image -->
             @if ($product->image)
-              <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" 
+              <img src="{{ filter_var($product->image, FILTER_VALIDATE_URL) ? $product->image : asset('storage/' . $product->image) }}" alt="{{ $product->name }}" 
                    style="width: 100%; height: 200px; object-fit: cover;">
             @else
               <div style="width: 100%; height: 200px; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center; color: #999; font-size: 3rem;">📦</div>
@@ -133,26 +167,30 @@
                 <p style="margin: 0.25rem 0 0 0; color: #1565c0; font-weight: 600;">{{ $product->category->name ?? 'N/A' }}</p>
               </div>
 
-              <!-- Action Buttons -->
-              <div style="display: flex; gap: 0.75rem;">
-                <a href="{{ route('products.edit', $product->id) }}" 
-                   style="flex: 1; padding: 0.75rem; background-color: #1e09e2; color: white; border: none; border-radius: 0.4rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; transition: 0.3s; font-family: 'Poppins', sans-serif;"
-                   onmouseover="this.style.backgroundColor='#1a07b8'; this.style.transform='translateY(-2px)'"
-                   onmouseout="this.style.backgroundColor='#1e09e2'; this.style.transform='translateY(0)'">
-                  ✏️ Edit
-                </a>
-                <form method="POST" action="{{ route('products.destroy', $product->id) }}" style="flex: 1; margin: 0;">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" 
-                          style="width: 100%; padding: 0.75rem; background-color: #dc3545; color: white; border: none; border-radius: 0.4rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: 'Poppins', sans-serif;"
-                          onmouseover="this.style.backgroundColor='#c82333'; this.style.transform='translateY(-2px)'"
-                          onmouseout="this.style.backgroundColor='#dc3545'; this.style.transform='translateY(0)'"
-                          onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
-                    🗑️ Hapus
-                  </button>
-                </form>
-              </div>
+              <!-- Action Buttons (Admin Only) -->
+              @auth
+                @if(auth()->user()->role === 'admin')
+                  <div style="display: flex; gap: 0.75rem;">
+                    <a href="{{ route('products.edit', $product->id) }}" 
+                       style="flex: 1; padding: 0.75rem; background-color: #1e09e2; color: white; border: none; border-radius: 0.4rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; transition: 0.3s; font-family: 'Poppins', sans-serif;"
+                       onmouseover="this.style.backgroundColor='#1a07b8'; this.style.transform='translateY(-2px)'"
+                       onmouseout="this.style.backgroundColor='#1e09e2'; this.style.transform='translateY(0)'">
+                      ✏️ Edit
+                    </a>
+                    <form method="POST" action="{{ route('products.destroy', $product->id) }}" style="flex: 1; margin: 0;">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" 
+                              style="width: 100%; padding: 0.75rem; background-color: #dc3545; color: white; border: none; border-radius: 0.4rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.3s; font-family: 'Poppins', sans-serif;"
+                              onmouseover="this.style.backgroundColor='#c82333'; this.style.transform='translateY(-2px)'"
+                              onmouseout="this.style.backgroundColor='#dc3545'; this.style.transform='translateY(0)'"
+                              onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
+                        🗑️ Hapus
+                      </button>
+                    </form>
+                  </div>
+                @endif
+              @endauth
             </div>
           </div>
         @endforeach

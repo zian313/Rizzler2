@@ -3,76 +3,57 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    // Tampilkan semua order
+    // Tampilkan daftar semua order (Admin)
     public function index()
     {
-        $orders = Order::with('user', 'items')->paginate(10);
-        return view('orders.index', compact('orders'));
+        // Ambil order terbaru dulu, load user dan items
+        $orders = Order::with(['user', 'items.product'])->latest()->paginate(10);
+        return view('admin.orders.index', compact('orders'));
     }
 
-    // Form untuk membuat order baru
-    public function create()
-    {
-        $users = User::all();
-        return view('orders.create', compact('users'));
-    }
-
-    // Simpan order baru ke database
-    public function store(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'status' => 'required|in:pending,confirmed,shipped,delivered,cancelled',
-            'total_price' => 'required|numeric|min:0',
-            'shipping_address' => 'required|string',
-            'phone' => 'nullable|string',
-        ]);
-
-        Order::create($request->all());
-
-        return redirect()->route('orders.index')->with('success', 'Order berhasil dibuat');
-    }
-
-    // Tampilkan detail order
+    // Tampilkan detail order (Admin)
     public function show(Order $order)
     {
-        $order->load('user', 'items.product');
-        return view('orders.show', compact('order'));
+        $order->load(['user', 'items.product']);
+        return view('admin.orders.show', compact('order'));
     }
 
-    // Form untuk edit order
-    public function edit(Order $order)
-    {
-        $users = User::all();
-        return view('orders.edit', compact('order', 'users'));
-    }
-
-    // Update order
+    // Update status order (Admin)
     public function update(Request $request, Order $order)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'status' => 'required|in:pending,confirmed,shipped,delivered,cancelled',
-            'total_price' => 'required|numeric|min:0',
-            'shipping_address' => 'required|string',
-            'phone' => 'nullable|string',
+            'status' => 'required|in:pending,paid,shipped,completed,cancelled'
         ]);
 
-        $order->update($request->all());
+        $order->update(['status' => $request->status]);
 
-        return redirect()->route('orders.index')->with('success', 'Order berhasil diperbarui');
+        return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui');
+    }
+    
+    // User: Tampilkan pesanan saya
+    public function myOrders()
+    {
+        $orders = Order::where('user_id', auth()->id())
+                    ->with(['items.product'])
+                    ->latest()
+                    ->paginate(10);
+                    
+        return view('orders.index', compact('orders'));
     }
 
-    // Hapus order
-    public function destroy(Order $order)
+    // User: Tampilkan detail pesanan saya
+    public function myOrderShow(Order $order)
     {
-        $order->delete();
+        // Pastikan order milik user yang sedang login
+        if ($order->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
 
-        return redirect()->route('orders.index')->with('success', 'Order berhasil dihapus');
+        $order->load(['items.product']);
+        return view('orders.show', compact('order'));
     }
 }

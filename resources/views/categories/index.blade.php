@@ -28,12 +28,24 @@
         @foreach ($categories as $category)
           <div style="background: white; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(30, 9, 226, 0.1); overflow: hidden; transition: 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 5px 20px rgba(30, 9, 226, 0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(30, 9, 226, 0.1)'">
             
-            <!-- Header Kategori -->
-            <div style="background: linear-gradient(135deg, #1e09e2 0%, #6c5ce7 100%); padding: 1.5rem; color: white;">
-              <h3 style="font-size: 1.3rem; font-weight: 700; margin: 0; margin-bottom: 0.5rem;">{{ $category->name }}</h3>
-              <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">
-                <i data-feather="package"></i> {{ $category->products->count() }} Produk
-              </p>
+            <!-- Image / Header Kategori -->
+            <div style="height: 180px; overflow: hidden; position: relative; background: #e9ecef;">
+              @if ($category->image)
+                <img src="{{ filter_var($category->image, FILTER_VALIDATE_URL) ? $category->image : asset('storage/' . $category->image) }}" 
+                     alt="{{ $category->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);"></div>
+              @else
+                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #1e09e2 0%, #6c5ce7 100%); display: flex; align-items: center; justify-content: center;">
+                  <i data-feather="image" style="color: rgba(255,255,255,0.5); width: 48px; height: 48px;"></i>
+                </div>
+              @endif
+              
+              <div style="position: absolute; bottom: 0; left: 0; padding: 1.25rem; width: 100%;">
+                 <h3 style="font-size: 1.4rem; font-weight: 700; margin: 0; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">{{ $category->name }}</h3>
+                 <p style="margin: 0; font-size: 0.85rem; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 0.3rem;">
+                    <i data-feather="package" style="width: 14px; height: 14px;"></i> {{ $category->products->count() }} Produk
+                 </p>
+              </div>
             </div>
 
             <!-- Content -->
@@ -85,7 +97,7 @@
           <i data-feather="folder-plus"></i>
         </div>
         <p style="font-size: 1.1rem; color: #999; margin-bottom: 1.5rem;">Belum ada kategori.</p>
-        @if (Auth::check())
+        @if (Auth::check() && Auth::user()->role === 'admin')
           <a href="{{ route('categories.create') }}" 
              style="background-color: #1e09e2; color: white; padding: 0.85rem 2rem; border-radius: 0.3rem; font-weight: 600; text-decoration: none; display: inline-block; transition: 0.3s;"
              onmouseover="this.style.backgroundColor='#1a07b8'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(30, 9, 226, 0.3)'"

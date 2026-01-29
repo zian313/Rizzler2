@@ -36,7 +36,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-    // Products Routes
+    // Orders Routes (Admin)
+    Route::get('/admin/orders', [OrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('/admin/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
+    Route::put('/admin/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+
+    // Products Routes (Admin Only)
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
@@ -48,18 +54,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
 
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+// Product detail masih bisa diakses publik
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products-pembeli', [ProductController::class, 'pembeli'])->name('products.pembeli');
 
 // Protected Routes - Harus login
 Route::middleware('auth')->group(function () {
     // Pembeli Routes
     Route::middleware('role:pembeli')->group(function () {
-        // Products Routes untuk pembeli
-        Route::get('/products-pembeli', [ProductController::class, 'pembeli'])->name('products.pembeli');
-
-        // Orders Routes
-        Route::resource('orders', OrderController::class);
+        // Orders Routes (History Pesanan Pembeli)
+        Route::get('/orders', [OrderController::class, 'myOrders'])->name('orders.index');
+        Route::get('/orders/{order}', [OrderController::class, 'myOrderShow'])->name('orders.show');
 
         // Cart Routes
         Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

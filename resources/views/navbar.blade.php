@@ -12,7 +12,7 @@
       @endif
     @endauth
     @guest
-      <a href="{{ route('products.index') }}">Produk</a>
+      <a href="{{ route('products.pembeli') }}">Produk</a>
     @endguest
     @auth
       @if (Auth::user()->isAdmin())
@@ -26,7 +26,7 @@
   </div>
 
   <div class="navbar-extra">
-    <a href="{{ route('products.index') }}" id="search" title="Cari Produk">
+    <a href="{{ route('products.pembeli') }}" id="search" title="Cari Produk">
       <i data-feather="search"></i>
     </a>
     @auth

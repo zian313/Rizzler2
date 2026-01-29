@@ -88,7 +88,7 @@
             <!-- Gambar Produk -->
             <div style="position: relative; overflow: hidden; height: 200px;">
               @if ($product->image)
-                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <img src="{{ filter_var($product->image, FILTER_VALIDATE_URL) ? $product->image : asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover; transition: 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
               @else
                 <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #1e09e2 0%, #6c5ce7 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
                   <i data-feather="image"></i>
@@ -121,9 +121,21 @@
     @endif
 
     <div style="text-align: center;">
-      <a href="{{ route('products.index') }}" style="background-color: #1e09e2; color: white; padding: 0.8rem 2rem; border-radius: 0.5rem; font-weight: 600; font-size: 1rem; text-decoration: none; display: inline-block; transition: 0.3s;" onmouseover="this.style.backgroundColor='#1a07b8'" onmouseout="this.style.backgroundColor='#1e09e2'">
-        Lihat Semua Produk
-      </a>
+      @auth
+        @if(auth()->user()->role === 'admin')
+          <a href="{{ route('products.index') }}" style="background-color: #1e09e2; color: white; padding: 0.8rem 2rem; border-radius: 0.5rem; font-weight: 600; font-size: 1rem; text-decoration: none; display: inline-block; transition: 0.3s;" onmouseover="this.style.backgroundColor='#1a07b8'" onmouseout="this.style.backgroundColor='#1e09e2'">
+            Kelola Produk
+          </a>
+        @else
+          <a href="{{ route('products.pembeli') }}" style="background-color: #1e09e2; color: white; padding: 0.8rem 2rem; border-radius: 0.5rem; font-weight: 600; font-size: 1rem; text-decoration: none; display: inline-block; transition: 0.3s;" onmouseover="this.style.backgroundColor='#1a07b8'" onmouseout="this.style.backgroundColor='#1e09e2'">
+            Lihat Semua Produk
+          </a>
+        @endif
+      @else
+        <a href="{{ route('products.pembeli') }}" style="background-color: #1e09e2; color: white; padding: 0.8rem 2rem; border-radius: 0.5rem; font-weight: 600; font-size: 1rem; text-decoration: none; display: inline-block; transition: 0.3s;" onmouseover="this.style.backgroundColor='#1a07b8'" onmouseout="this.style.backgroundColor='#1e09e2'">
+          Lihat Semua Produk
+        </a>
+      @endauth
     </div>
   </section>
 
@@ -132,9 +144,15 @@
     <h2 style="font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">Siap untuk Berbelanja?</h2>
     <p style="font-size: 1.1rem; margin-bottom: 2rem;">Bergabunglah dengan ribuan pelanggan puas kami dan nikmati pengalaman belanja terbaik.</p>
     @if (Auth::check())
-      <a href="{{ route('products.index') }}" style="background-color: white; color: #1e09e2; padding: 1rem 2rem; border-radius: 0.5rem; font-weight: 600; font-size: 1.1rem; text-decoration: none; display: inline-block; transition: 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-        Mulai Belanja
-      </a>
+      @if(auth()->user()->role === 'admin')
+        <a href="{{ route('products.index') }}" style="background-color: white; color: #1e09e2; padding: 1rem 2rem; border-radius: 0.5rem; font-weight: 600; font-size: 1.1rem; text-decoration: none; display: inline-block; transition: 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+          Kelola Produk
+        </a>
+      @else
+        <a href="{{ route('products.pembeli') }}" style="background-color: white; color: #1e09e2; padding: 1rem 2rem; border-radius: 0.5rem; font-weight: 600; font-size: 1.1rem; text-decoration: none; display: inline-block; transition: 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+          Mulai Belanja
+        </a>
+      @endif
     @else
       <a href="{{ route('register') }}" style="background-color: white; color: #1e09e2; padding: 1rem 2rem; border-radius: 0.5rem; font-weight: 600; font-size: 1.1rem; text-decoration: none; display: inline-block; transition: 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
         Daftar Sekarang
